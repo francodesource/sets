@@ -27,7 +27,7 @@ func TestNewSet(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := NewSet(tt.elements...)
+			result := New(tt.elements...)
 			if len(result.values) != len(tt.expected.values) {
 				t.Errorf("expected set size %d, got %d", len(tt.expected.values), len(result.values))
 			}
@@ -65,7 +65,7 @@ func TestSet_String(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			set := NewSet(tt.elements...)
+			set := New(tt.elements...)
 			result := set.String()
 			if result != tt.expected {
 				t.Errorf("expected string %q, got %q", tt.expected, result)
@@ -94,7 +94,7 @@ func TestSet_Iter(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			set := NewSet(tt.elements...)
+			set := New(tt.elements...)
 			iterSeq := set.Iter()
 			result := make(map[int]struct{})
 			for val := range iterSeq {
@@ -130,7 +130,7 @@ func TestSet_Has(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			set := NewSet(tt.elements...)
+			set := New(tt.elements...)
 			result := set.Has(tt.check)
 			if result != tt.expected {
 				t.Errorf("expected Has(%d) to be %v, got %v", tt.check, tt.expected, result)
@@ -140,7 +140,7 @@ func TestSet_Has(t *testing.T) {
 }
 
 func TestSet_Add(t *testing.T) {
-	set := NewSet[int]()
+	set := New[int]()
 	set.Add(1)
 	if !set.Has(1) {
 		t.Errorf("expected set to have element 1 after adding it")
@@ -148,7 +148,7 @@ func TestSet_Add(t *testing.T) {
 }
 
 func TestSet_Remove(t *testing.T) {
-	set := NewSet(1, 2, 3)
+	set := New(1, 2, 3)
 	set.Remove(2)
 	if set.Has(2) {
 		t.Errorf("expected set to not have element 2 after removing it")
@@ -156,7 +156,7 @@ func TestSet_Remove(t *testing.T) {
 }
 
 func TestSet_Empty(t *testing.T) {
-	set := NewSet[int]()
+	set := New[int]()
 	if !set.Empty() {
 		t.Errorf("expected set to be empty")
 	}
@@ -168,7 +168,7 @@ func TestSet_Empty(t *testing.T) {
 }
 
 func TestSet_Size(t *testing.T) {
-	set := NewSet(1, 2, 3)
+	set := New(1, 2, 3)
 	if set.Size() != 3 {
 		t.Errorf("expected set size to be 3, got %d", set.Size())
 	}
@@ -183,20 +183,20 @@ func TestSet_Equals(t *testing.T) {
 	}{
 		{
 			name:     "equal sets",
-			set1:     NewSet(1, 2, 3),
-			set2:     NewSet(1, 2, 3),
+			set1:     New(1, 2, 3),
+			set2:     New(1, 2, 3),
 			expected: true,
 		},
 		{
 			name:     "unequal sets",
-			set1:     NewSet(1, 2, 3),
-			set2:     NewSet(1, 2, 4),
+			set1:     New(1, 2, 3),
+			set2:     New(1, 2, 4),
 			expected: false,
 		},
 		{
 			name:     "different sizes",
-			set1:     NewSet(1, 2),
-			set2:     NewSet(1, 2, 3),
+			set1:     New(1, 2),
+			set2:     New(1, 2, 3),
 			expected: false,
 		},
 	}
@@ -220,14 +220,14 @@ func TestSet_IsSubsetOf(t *testing.T) {
 	}{
 		{
 			name:     "is subset",
-			subset:   NewSet(1, 2),
-			superset: NewSet(1, 2, 3),
+			subset:   New(1, 2),
+			superset: New(1, 2, 3),
 			expected: true,
 		},
 		{
 			name:     "is not subset",
-			subset:   NewSet(1, 4),
-			superset: NewSet(1, 2, 3),
+			subset:   New(1, 4),
+			superset: New(1, 2, 3),
 			expected: false,
 		},
 	}
@@ -250,17 +250,17 @@ func TestUnion(t *testing.T) {
 	}{
 		{
 			name:     "union of two sets",
-			sets:     []Set[int]{NewSet(1, 2), NewSet(2, 3)},
+			sets:     []Set[int]{New(1, 2), New(2, 3)},
 			expected: []int{1, 2, 3},
 		},
 		{
 			name:     "union with empty set",
-			sets:     []Set[int]{NewSet(1, 2), NewSet[int]()},
+			sets:     []Set[int]{New(1, 2), New[int]()},
 			expected: []int{1, 2},
 		},
 		{
 			name:     "union of multiple sets",
-			sets:     []Set[int]{NewSet(1), NewSet(2), NewSet(3)},
+			sets:     []Set[int]{New(1), New(2), New(3)},
 			expected: []int{1, 2, 3},
 		},
 		{
@@ -273,7 +273,7 @@ func TestUnion(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := Union(tt.sets...)
-			expectedSet := NewSet(tt.expected...)
+			expectedSet := New(tt.expected...)
 			if !result.Equals(expectedSet) {
 				t.Errorf("expected union to be %v, got %v", expectedSet, result)
 			}
@@ -289,17 +289,17 @@ func TestIntersection(t *testing.T) {
 	}{
 		{
 			name:     "intersection of two sets",
-			sets:     []Set[int]{NewSet(1, 2), NewSet(2, 3)},
+			sets:     []Set[int]{New(1, 2), New(2, 3)},
 			expected: []int{2},
 		},
 		{
 			name:     "intersection with empty set",
-			sets:     []Set[int]{NewSet(1, 2), NewSet[int]()},
+			sets:     []Set[int]{New(1, 2), New[int]()},
 			expected: []int{},
 		},
 		{
 			name:     "intersection of multiple sets",
-			sets:     []Set[int]{NewSet(1, 2, 3), NewSet(2, 3, 4), NewSet(3, 4, 5)},
+			sets:     []Set[int]{New(1, 2, 3), New(2, 3, 4), New(3, 4, 5)},
 			expected: []int{3},
 		},
 		{
@@ -312,7 +312,7 @@ func TestIntersection(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := Intersection(tt.sets...)
-			expectedSet := NewSet(tt.expected...)
+			expectedSet := New(tt.expected...)
 			if !result.Equals(expectedSet) {
 				t.Errorf("expected intersection to be %v, got %v", expectedSet, result)
 			}
@@ -329,20 +329,20 @@ func TestDifference(t *testing.T) {
 	}{
 		{
 			name:     "difference of two sets",
-			setA:     NewSet(1, 2, 3),
-			setB:     NewSet(2, 3),
+			setA:     New(1, 2, 3),
+			setB:     New(2, 3),
 			expected: []int{1},
 		},
 		{
 			name:     "difference with empty set",
-			setA:     NewSet(1, 2),
-			setB:     NewSet[int](),
+			setA:     New(1, 2),
+			setB:     New[int](),
 			expected: []int{1, 2},
 		},
 		{
 			name:     "difference resulting in empty set",
-			setA:     NewSet(1, 2),
-			setB:     NewSet(1, 2),
+			setA:     New(1, 2),
+			setB:     New(1, 2),
 			expected: []int{},
 		},
 	}
@@ -350,7 +350,7 @@ func TestDifference(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := Difference(tt.setA, tt.setB)
-			expectedSet := NewSet(tt.expected...)
+			expectedSet := New(tt.expected...)
 			if !result.Equals(expectedSet) {
 				t.Errorf("expected difference to be %v, got %v", expectedSet, result)
 			}

@@ -11,7 +11,7 @@ type Set[T comparable] struct {
 	values map[T]struct{}
 }
 
-func NewSet[T comparable](elements ...T) Set[T] {
+func New[T comparable](elements ...T) Set[T] {
 	set := make(map[T]struct{}, len(elements))
 	for _, elem := range elements {
 		set[elem] = struct{}{}
