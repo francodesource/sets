@@ -73,3 +73,36 @@ func TestSet_String(t *testing.T) {
 		})
 	}
 }
+
+func TestSet_Iter(t *testing.T) {
+	tests := []struct {
+		name     string
+		elements []int
+		expected map[int]struct{}
+	}{
+		{
+			name:     "empty set",
+			elements: []int{},
+			expected: map[int]struct{}{},
+		},
+		{
+			name:     "set with elements",
+			elements: []int{1, 2, 3},
+			expected: map[int]struct{}{1: {}, 2: {}, 3: {}},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			set := NewSet(tt.elements...)
+			iterSeq := set.Iter()
+			result := make(map[int]struct{})
+			for val := range iterSeq {
+				result[val] = struct{}{}
+			}
+			if len(result) != len(tt.expected) {
+				t.Errorf("expected set size %d, got %d", len(tt.expected), len(result))
+			}
+		})
+	}
+}
