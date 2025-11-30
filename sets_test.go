@@ -173,3 +173,118 @@ func TestSet_Size(t *testing.T) {
 		t.Errorf("expected set size to be 3, got %d", set.Size())
 	}
 }
+
+func TestSet_Equals(t *testing.T) {
+	tests := []struct {
+		name     string
+		set1     Set[int]
+		set2     Set[int]
+		expected bool
+	}{
+		{
+			name:     "equal sets",
+			set1:     NewSet(1, 2, 3),
+			set2:     NewSet(1, 2, 3),
+			expected: true,
+		},
+		{
+			name:     "unequal sets",
+			set1:     NewSet(1, 2, 3),
+			set2:     NewSet(1, 2, 4),
+			expected: false,
+		},
+		{
+			name:     "different sizes",
+			set1:     NewSet(1, 2),
+			set2:     NewSet(1, 2, 3),
+			expected: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := tt.set1.Equals(tt.set2)
+			if result != tt.expected {
+				t.Errorf("expected Equals to be %v, got %v", tt.expected, result)
+			}
+		})
+	}
+}
+
+func TestUnion(t *testing.T) {
+	tests := []struct {
+		name     string
+		sets     []Set[int]
+		expected []int
+	}{
+		{
+			name:     "union of two sets",
+			sets:     []Set[int]{NewSet(1, 2), NewSet(2, 3)},
+			expected: []int{1, 2, 3},
+		},
+		{
+			name:     "union with empty set",
+			sets:     []Set[int]{NewSet(1, 2), NewSet[int]()},
+			expected: []int{1, 2},
+		},
+		{
+			name:     "union of multiple sets",
+			sets:     []Set[int]{NewSet(1), NewSet(2), NewSet(3)},
+			expected: []int{1, 2, 3},
+		},
+		{
+			name:     "union of no sets",
+			sets:     []Set[int]{},
+			expected: []int{},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := Union(tt.sets...)
+			expectedSet := NewSet(tt.expected...)
+			if !result.Equals(expectedSet) {
+				t.Errorf("expected union to be %v, got %v", expectedSet, result)
+			}
+		})
+	}
+}
+
+func TestIntersection(t *testing.T) {
+	tests := []struct {
+		name     string
+		sets     []Set[int]
+		expected []int
+	}{
+		{
+			name:     "intersection of two sets",
+			sets:     []Set[int]{NewSet(1, 2), NewSet(2, 3)},
+			expected: []int{2},
+		},
+		{
+			name:     "intersection with empty set",
+			sets:     []Set[int]{NewSet(1, 2), NewSet[int]()},
+			expected: []int{},
+		},
+		{
+			name:     "intersection of multiple sets",
+			sets:     []Set[int]{NewSet(1, 2, 3), NewSet(2, 3, 4), NewSet(3, 4, 5)},
+			expected: []int{3},
+		},
+		{
+			name:     "intersection of no sets",
+			sets:     []Set[int]{},
+			expected: []int{},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := Intersection(tt.sets...)
+			expectedSet := NewSet(tt.expected...)
+			if !result.Equals(expectedSet) {
+				t.Errorf("expected intersection to be %v, got %v", expectedSet, result)
+			}
+		})
+	}
+}

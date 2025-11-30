@@ -54,3 +54,44 @@ func (s Set[T]) Empty() bool {
 func (s Set[T]) Size() int {
 	return len(s.values)
 }
+
+func (s Set[T]) Equals(other Set[T]) bool {
+	if s.Size() != other.Size() {
+		return false
+	}
+
+	for k := range s.values {
+		if !other.Has(k) {
+			return false
+		}
+	}
+
+	return true
+}
+
+func Union[T comparable](sets ...Set[T]) Set[T] {
+	if len(sets) == 0 {
+		return Set[T]{values: make(map[T]struct{})}
+	}
+
+	res := maps.Clone(sets[0].values)
+	for _, set := range sets[1:] {
+		maps.Copy(res, set.values)
+	}
+	return Set[T]{values: res}
+}
+
+func Intersection[T comparable](sets ...Set[T]) Set[T] {
+	if len(sets) == 0 {
+		return Set[T]{values: make(map[T]struct{})}
+	}
+
+	res := maps.Clone(sets[0].values)
+	for _, set := range sets[1:] {
+		maps.DeleteFunc(res, func(key T, _ struct{}) bool {
+			_, exists := set.values[key]
+			return !exists
+		})
+	}
+	return Set[T]{values: res}
+}
