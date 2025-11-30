@@ -242,6 +242,20 @@ func TestSet_IsSubsetOf(t *testing.T) {
 	}
 }
 
+func TestSet_Copy(t *testing.T) {
+	original := New(1, 2, 3)
+	copySet := Copy(original)
+
+	if !original.Equals(copySet) {
+		t.Errorf("expected copied set to be equal to original")
+	}
+
+	copySet.Add(4)
+	if original.Equals(copySet) {
+		t.Errorf("expected copied set to be independent of original after modification")
+	}
+}
+
 func TestUnion(t *testing.T) {
 	tests := []struct {
 		name     string

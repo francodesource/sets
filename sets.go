@@ -95,6 +95,11 @@ func (s Set[T]) Equals(other Set[T]) bool {
 	return true
 }
 
+// Copy creates a shallow copy of the set.
+func Copy[T comparable](s Set[T]) Set[T] {
+	return Set[T]{values: maps.Clone(s.values)}
+}
+
 // Union returns a new set that is the union of the provided sets.
 func Union[T comparable](sets ...Set[T]) Set[T] {
 	if len(sets) == 0 {
