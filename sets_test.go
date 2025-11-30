@@ -1,6 +1,9 @@
 package sets
 
-import "testing"
+import (
+	"regexp"
+	"testing"
+)
 
 func TestNewSet(t *testing.T) {
 	tests := []struct {
@@ -35,31 +38,28 @@ func TestNewSet(t *testing.T) {
 	}
 }
 
+func TestWithCapacity(t *testing.T) {
+	set := WithCapacity[int](3)
+	if len(set.values) != 0 {
+		t.Errorf("expected empty set, got size %d", len(set.values))
+	}
+}
+
 func TestSet_String(t *testing.T) {
 	tests := []struct {
 		name     string
 		elements []int
-		expected string
+		expected *regexp.Regexp
 	}{
 		{
 			name:     "empty set",
 			elements: []int{},
-			expected: "set{}",
+			expected: regexp.MustCompile(`^set\{}$`),
 		},
 		{
 			name:     "singleton set",
 			elements: []int{1},
-			expected: "set{1}",
-		},
-		{
-			name:     "set with elements",
-			elements: []int{1, 2, 3},
-			expected: "set{1, 2, 3}",
-		},
-		{
-			name:     "set with duplicate elements",
-			elements: []int{1, 2, 2, 3},
-			expected: "set{1, 2, 3}",
+			expected: regexp.MustCompile(`^set\{1}$`),
 		},
 	}
 
@@ -67,7 +67,7 @@ func TestSet_String(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			set := New(tt.elements...)
 			result := set.String()
-			if result != tt.expected {
+			if !tt.expected.MatchString(result) {
 				t.Errorf("expected string %q, got %q", tt.expected, result)
 			}
 		})

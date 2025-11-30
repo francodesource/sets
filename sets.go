@@ -20,6 +20,10 @@ func New[T comparable](elements ...T) Set[T] {
 	return Set[T]{values: set}
 }
 
+func WithCapacity[T comparable](capacity int) Set[T] {
+	return Set[T]{values: make(map[T]struct{}, capacity)}
+}
+
 func (s Set[T]) Iter() iter.Seq[T] {
 	return maps.Keys(s.values)
 }
