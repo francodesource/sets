@@ -288,3 +288,41 @@ func TestIntersection(t *testing.T) {
 		})
 	}
 }
+
+func TestDifference(t *testing.T) {
+	tests := []struct {
+		name     string
+		setA     Set[int]
+		setB     Set[int]
+		expected []int
+	}{
+		{
+			name:     "difference of two sets",
+			setA:     NewSet(1, 2, 3),
+			setB:     NewSet(2, 3),
+			expected: []int{1},
+		},
+		{
+			name:     "difference with empty set",
+			setA:     NewSet(1, 2),
+			setB:     NewSet[int](),
+			expected: []int{1, 2},
+		},
+		{
+			name:     "difference resulting in empty set",
+			setA:     NewSet(1, 2),
+			setB:     NewSet(1, 2),
+			expected: []int{},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := Difference(tt.setA, tt.setB)
+			expectedSet := NewSet(tt.expected...)
+			if !result.Equals(expectedSet) {
+				t.Errorf("expected difference to be %v, got %v", expectedSet, result)
+			}
+		})
+	}
+}

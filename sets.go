@@ -95,3 +95,11 @@ func Intersection[T comparable](sets ...Set[T]) Set[T] {
 	}
 	return Set[T]{values: res}
 }
+
+func Difference[T comparable](setA, setB Set[T]) Set[T] {
+	res := maps.Clone(setA.values)
+	for k := range setB.values {
+		delete(res, k)
+	}
+	return Set[T]{values: res}
+}
