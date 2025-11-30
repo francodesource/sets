@@ -33,3 +33,24 @@ func (s Set[T]) String() string {
 
 	return "set{" + strings.Join(strs, ", ") + "}"
 }
+
+func (s Set[T]) Has(element T) bool {
+	_, exists := s.values[element]
+	return exists
+}
+
+func (s Set[T]) Add(element T) {
+	s.values[element] = struct{}{}
+}
+
+func (s Set[T]) Remove(element T) {
+	delete(s.values, element)
+}
+
+func (s Set[T]) Empty() bool {
+	return len(s.values) == 0
+}
+
+func (s Set[T]) Size() int {
+	return len(s.values)
+}
