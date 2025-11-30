@@ -55,6 +55,15 @@ func (s Set[T]) Size() int {
 	return len(s.values)
 }
 
+func (s Set[T]) IsSubsetOf(other Set[T]) bool {
+	for k := range s.values {
+		if !other.Has(k) {
+			return false
+		}
+	}
+	return true
+}
+
 func (s Set[T]) Equals(other Set[T]) bool {
 	if s.Size() != other.Size() {
 		return false

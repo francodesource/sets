@@ -211,6 +211,37 @@ func TestSet_Equals(t *testing.T) {
 	}
 }
 
+func TestSet_IsSubsetOf(t *testing.T) {
+	tests := []struct {
+		name     string
+		subset   Set[int]
+		superset Set[int]
+		expected bool
+	}{
+		{
+			name:     "is subset",
+			subset:   NewSet(1, 2),
+			superset: NewSet(1, 2, 3),
+			expected: true,
+		},
+		{
+			name:     "is not subset",
+			subset:   NewSet(1, 4),
+			superset: NewSet(1, 2, 3),
+			expected: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := tt.subset.IsSubsetOf(tt.superset)
+			if result != tt.expected {
+				t.Errorf("expected IsSubsetOf to be %v, got %v", tt.expected, result)
+			}
+		})
+	}
+}
+
 func TestUnion(t *testing.T) {
 	tests := []struct {
 		name     string
